@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent (typeof(PlayerController), typeof(GunController))]
-public class Player : MonoBehaviour
+public class Player : LivingEntity
 {
     private PlayerController playerController;
     private GunController gunController;
@@ -14,6 +14,11 @@ public class Player : MonoBehaviour
     {
         playerController = GetComponent<PlayerController>();
         gunController = GetComponent<GunController>();
+    }
+
+    public override void Start()
+    {
+        base.Start();
     }
 
     public void SetDirectonnalInputs (Vector2 inputs)
