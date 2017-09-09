@@ -6,32 +6,137 @@ using UnityEngine.AI;
 [RequireComponent (typeof (NavMeshAgent))]
 public class Enemy : LivingEntity
 {
+    public enum State
+    {
+        Idle,
+        Chasing,
+        Attacking
+    };
+
+    private State currentState;
+
     private NavMeshAgent agent;
     private Transform target;
+    private LivingEntity targetEntity;
+    private Material skinMaterial;
+
+    private Color originalColor;
+
+    private float attackDistance = .5f;
+    private float timeBtwAttacks = 1f;
+    private float damage = 1f;
+
+    private float nextAttackTime;
+    private float myCollisionRaduis;
+    private float targetCollisionRaduis;
+
+    private bool hasTarget;
 
     private void Awake ()
     {
         agent = GetComponent<NavMeshAgent>();
-        target = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     protected override void Start()
     {
         base.Start();
-        StartCoroutine(UpdatePath());
+        currentState = State.Chasing;
+
+        skinMaterial = GetComponent<Renderer>().material;
+        originalColor = skinMaterial.color;
+
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            target = GameObject.FindGameObjectWithTag("Player").transform;
+            hasTarget = true;
+
+            myCollisionRaduis = GetComponent<CapsuleCollider>().radius;
+            targetCollisionRaduis = target.GetComponent<CapsuleCollider>().radius;
+
+            targetEntity = target.GetComponent<LivingEntity>();
+            targetEntity.OnDeath += OnTargetDeath;
+
+            StartCoroutine(UpdatePath());
+        }
+
     }
-    
+
+    private void OnTargetDeath ()
+    {
+        hasTarget = false;
+        currentState = State.Idle;
+    }
+
+    private void Update()
+    {
+        if (hasTarget)
+        {
+            if (Time.time > nextAttackTime)
+            {
+                float sqrDistanceToTarget = (target.position - transform.position).sqrMagnitude;
+
+                if (sqrDistanceToTarget < Mathf.Pow(attackDistance + myCollisionRaduis + targetCollisionRaduis, 2))
+                {
+                    nextAttackTime = Time.time + timeBtwAttacks;
+                    StartCoroutine(Attack());
+                }
+            }
+        }
+    }
+
+    IEnumerator Attack()
+    {
+        currentState = State.Attacking;
+        agent.enabled = false;
+
+        Vector3 originalPosition = transform.position;
+        Vector3 dirToTarget = (target.position - transform.position).normalized;
+        Vector3 attackPosition = target.position - dirToTarget * myCollisionRaduis;
+
+        float attackSpeed = 3;
+        float percent = 0;
+
+        skinMaterial.color = Color.red;
+        bool hasAppliedDamage = false;
+
+        while (percent <= 1)
+        {
+            if (percent >= .5f && !hasAppliedDamage)
+            {
+                hasAppliedDamage = true;
+                targetEntity.TakeDamage(damage);
+            }
+
+            percent += Time.deltaTime * attackSpeed;
+            float interpolation = (-Mathf.Pow(percent, 2) + percent) * 4;
+            transform.position = Vector3.Lerp(originalPosition, attackPosition, interpolation);
+            
+            yield return null;
+        }
+
+        skinMaterial.color = originalColor;
+
+        currentState = State.Chasing;
+        agent.enabled = true;
+    }
+
+
     IEnumerator UpdatePath ()
     {
         float refreshRate = 0.4f;
-        while (target != null)
+        while (hasTarget)
         {
-            Vector3 targetPosition = new Vector3(target.position.x, 0, target.position.z);
-
-            if (!dead)
+            if (currentState == State.Chasing)
             {
-                SetDestination(targetPosition);
+                Vector3 dirToTarget = (target.position - transform.position).normalized;
+                Vector3 targetPosition = target.position - dirToTarget * (myCollisionRaduis + targetCollisionRaduis + attackDistance / 2f);
+
+                if (!dead)
+                {
+                    SetDestination(targetPosition);
+                }
             }
+
             yield return new WaitForSeconds(refreshRate);
         }
     }
