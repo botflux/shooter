@@ -33,7 +33,12 @@ public class PlayerInput : MonoBehaviour
         // Weapon input
         if (Input.GetMouseButton(0))
         {
-            player.Shoot();
+            player.OnTriggerHold();
         }   
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            player.OnTriggerRelease();
+        }
     }
 }

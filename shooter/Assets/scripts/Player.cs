@@ -31,8 +31,13 @@ public class Player : LivingEntity
         playerController.LookAt(lookPoint);
     }
 
-    public void Shoot ()
+    public void OnTriggerHold ()
     {
-        gunController.Shoot();
+        gunController.OnTriggerHold();
+    }
+
+    public void OnTriggerRelease()
+    {
+        gunController.OnTriggerRelease();
     }
 }

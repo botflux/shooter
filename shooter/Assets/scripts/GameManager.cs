@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private NavMeshBuilder navMeshBuilder;
+    private MapGenerator mapGenerator;
+    private Spawner spawner;
 
     private void Awake ()
     {
-        navMeshBuilder = GetComponent<NavMeshBuilder>();
+        mapGenerator = FindObjectOfType<MapGenerator>();
+        spawner = FindObjectOfType<Spawner>();
+
+        spawner.OnNewWave += mapGenerator.OnNewWave;
     }
 
     private void Start ()
     {
-        navMeshBuilder.BuildNavMesh();
+        mapGenerator.GenerateMap();
+        spawner.NextWave();
     }
 }

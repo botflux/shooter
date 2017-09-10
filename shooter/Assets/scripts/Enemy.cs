@@ -15,6 +15,8 @@ public class Enemy : LivingEntity
 
     private State currentState;
 
+    public ParticleSystem deathEffect;
+
     private NavMeshAgent agent;
     private Transform target;
     private LivingEntity targetEntity;
@@ -59,6 +61,16 @@ public class Enemy : LivingEntity
             StartCoroutine(UpdatePath());
         }
 
+    }
+
+    public override void TakeHit(float damage, Vector3 hitPoint, Vector3 hitDirection)
+    {
+        if (damage>=health)
+        {
+            Destroy(Instantiate<ParticleSystem>(deathEffect, hitPoint, Quaternion.FromToRotation(Vector3.forward, hitDirection)).gameObject, deathEffect.main.startLifetimeMultiplier);
+        }
+
+        base.TakeHit(damage, hitPoint, hitDirection);
     }
 
     private void OnTargetDeath ()
