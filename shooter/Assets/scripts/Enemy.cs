@@ -37,15 +37,6 @@ public class Enemy : LivingEntity
     private void Awake ()
     {
         agent = GetComponent<NavMeshAgent>();
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-        currentState = State.Chasing;
-
-        skinMaterial = GetComponent<Renderer>().material;
-        originalColor = skinMaterial.color;
 
         if (GameObject.FindGameObjectWithTag("Player") != null)
         {
@@ -56,11 +47,36 @@ public class Enemy : LivingEntity
             targetCollisionRaduis = target.GetComponent<CapsuleCollider>().radius;
 
             targetEntity = target.GetComponent<LivingEntity>();
-            targetEntity.OnDeath += OnTargetDeath;
+        }
 
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        
+        if (hasTarget)
+        {
+            currentState = State.Chasing;
+            targetEntity.OnDeath += OnTargetDeath;
             StartCoroutine(UpdatePath());
         }
 
+    }
+
+    public void SetCharacteristics (float moveSpeed, int hitsToKillPlayer, float enemyHealth, Color skinColor)
+    {
+        agent.speed = moveSpeed;
+        if (hasTarget)
+        {
+            damage = Mathf.Ceil(targetEntity.startingHealth / hitsToKillPlayer);
+
+        }
+
+        startingHealth = enemyHealth;
+        skinMaterial = GetComponent<Renderer>().material;
+        skinMaterial.color = skinColor;
+        originalColor = skinMaterial.color;
     }
 
     public override void TakeHit(float damage, Vector3 hitPoint, Vector3 hitDirection)
