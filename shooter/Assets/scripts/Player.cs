@@ -8,7 +8,17 @@ public class Player : LivingEntity
     private PlayerController playerController;
     private GunController gunController;
 
+    public Crosshair crosshair;
+
     public float playerSpeed = 1.0f;
+
+    public float GunHeight
+    {
+        get
+        {
+            return gunController.GunHeight;
+        }
+    }
 
     private void Awake ()
     {
@@ -29,6 +39,12 @@ public class Player : LivingEntity
     public void SetLookPoint (Vector3 lookPoint)
     {
         playerController.LookAt(lookPoint);
+        crosshair.transform.position = lookPoint;
+    }
+
+    public void DetectTargets (Ray ray)
+    {
+        crosshair.DetectTargets(ray);
     }
 
     public void OnTriggerHold ()

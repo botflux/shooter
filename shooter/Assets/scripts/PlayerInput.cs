@@ -21,13 +21,14 @@ public class PlayerInput : MonoBehaviour
         player.SetDirectonnalInputs(inputs);
 
         // Look input
-        Plane ground = new Plane(Vector3.up, Vector3.zero);
+        Plane ground = new Plane(Vector3.up, Vector3.up * player.GunHeight);
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         float enter;
         if (ground.Raycast(ray, out enter))
         {
             Vector3 p = ray.GetPoint(enter);
             player.SetLookPoint(p);
+            player.DetectTargets(ray);
         }
         
         // Weapon input
