@@ -108,7 +108,7 @@ public class Spawner : MonoBehaviour
 
     private void OnEnemyDeath ()
     {
-        Debug.Log("Enemy died");
+        //Debug.Log("Enemy died");
         enemiesRemainingAlive--;
 
         if (enemiesRemainingAlive == 0)

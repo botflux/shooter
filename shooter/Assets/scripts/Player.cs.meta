@@ -1,10 +1,12 @@
 fileFormatVersion: 2
 guid: 2ed939e0a2a0ab541947ea8da99ad8cb
-timeCreated: 1504963709
+timeCreated: 1505239343
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - crosshair: {fileID: 114556611547898166, guid: 00b1ba7b3aded3044848e2bf42eceeaf,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
