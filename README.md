@@ -16,4 +16,14 @@ A shoter game
 
 If you want to try Player speed and stuff, you can use it in a simple plane gameobject.
 
+### Set-up Enemy
+
+The mosts part of enemy propreties are automatically set.
+Some of enemy attributes are set by the spawner, you can change these fields in waves of Spawner script.
+You can also change speed and acceleration in Nav Mesh Agent component (speed is set by spawer)
+
+- Assign a particle system for the death effect of the enemy on "Death Effect" field of Enemy component.
+- Set starting health of the enemy in Starting Health field in Enemy script.
+
+
 
