@@ -5,6 +5,8 @@ A shoter game
 
 - Spawner accessing MapGenerator scripts (only GameManager should access and set informations after to the spawner)
 - Events listener as OnPlayerDeath should be in GameManager class and not in Spawner. At least OnEnemyDeath must be in Spawner because it is only use in the class
+- Use gamemanager to reset variables and reinstantiate player instead of reloading level
+- Implement Gameobject pool for: Tiles, Bullet, Shell, Enemy.
 
 ## Set-up scene and params
 

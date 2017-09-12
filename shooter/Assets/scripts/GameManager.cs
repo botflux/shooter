@@ -17,6 +17,11 @@ public class GameManager : MonoBehaviour
 
     private void Start ()
     {
+        StartGame();
+    }
+
+    private void StartGame()
+    {
         mapGenerator.GenerateMap();
         spawner.NextWave();
     }

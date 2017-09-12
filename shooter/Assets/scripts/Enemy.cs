@@ -61,7 +61,6 @@ public class Enemy : LivingEntity
             targetEntity.OnDeath += OnTargetDeath;
             StartCoroutine(UpdatePath());
         }
-
     }
 
     public void SetCharacteristics (float moveSpeed, int hitsToKillPlayer, float enemyHealth, Color skinColor)
